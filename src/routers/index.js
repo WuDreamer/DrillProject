@@ -24,6 +24,14 @@ const routes = [{
         },
         component: () => import('../views/User.vue'),
     }, ]
+
+}, {
+    path: '/login',
+    name: 'Login',
+    meta: {
+        title: "登录"
+    },
+    component: () => import('../views/Login.vue'),
 }]
 
 
