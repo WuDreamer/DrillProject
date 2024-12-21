@@ -6,7 +6,7 @@
         style="width: 250px"
         suffix-icon="el-icon-search"
         placeholder="请输入名称"
-        v-model="username"
+        v-model="title"
       ></el-input>
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
       <el-button class="ml-5" type="warning" @click="reset">重置</el-button>
@@ -20,7 +20,7 @@
         >批量删除 <i class="el-icon-remove-outline"></i
       ></el-button>
       <el-upload
-        action="http://localhost:8090/user/import"
+        action="http://localhost:8090/article/import"
         style="display: inline-block"
         :show-file-list="false"
         accept="xlsx"
@@ -40,13 +40,11 @@
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg"
       ><el-table-column type="selection" width="50px"> </el-table-column>
       <el-table-column prop="id" label="ID" width="50px"> </el-table-column>
-      <el-table-column prop="username" label="用户名" width="80px">
+      <el-table-column prop="title" label="文章标题" width="100px">
       </el-table-column>
-      <el-table-column prop="nickname" label="昵称" width="80px">
+      <el-table-column prop="body" label="文章内容" width="300px">
       </el-table-column>
-      <el-table-column prop="email" label="邮箱"> </el-table-column>
-      <el-table-column prop="phone" label="电话"> </el-table-column>
-      <el-table-column prop="address" label="地址"> </el-table-column>
+      <el-table-column prop="likes" label="访问量"> </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)"
@@ -74,31 +72,22 @@
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="pageNum"
+        :current-page="page"
         :page-sizes="[2, 5, 10, 20]"
-        :page-size="pageSize"
+        :page-size="size"
         layout="total,sizes,prev, pager, next"
         :total="total"
       >
       </el-pagination>
     </div>
     <!-- 新增弹窗 -->
-    <el-dialog title="用户信息" :visible.sync="dialogFormVisible" width="30%">
+    <el-dialog title="文章信息" :visible.sync="dialogFormVisible" width="30%">
       <el-form label-width="80px" size="small">
-        <el-form-item label="用户名">
-          <el-input v-model="form.username" autocomplete="off"></el-input>
+        <el-form-item label="文章标题">
+          <el-input v-model="form.title" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="昵称">
-          <el-input v-model="form.nickname" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱">
-          <el-input v-model="form.email" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="电话">
-          <el-input v-model="form.phone" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address" autocomplete="off"></el-input>
+        <el-form-item label="文章内容">
+          <el-input v-model="form.body" autocomplete="off"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -111,7 +100,7 @@
 
 <script>
 export default {
-  name: "UserPage",
+  name: "ArticlePage",
   props: {
     collapseBtnClass: String,
     collapse: Boolean,
@@ -121,8 +110,8 @@ export default {
       tableData: [],
       total: 0,
       page: 1,
-      size: 10,
-      username: "", // 按用户名搜索
+      size: 5,
+      title: "", // 按用户名搜索
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},
@@ -136,7 +125,7 @@ export default {
     load() {
       // 封装成方法，便于调用
       this.request
-        .get("/user/page", {
+        .get("/article/page", {
           params: {
             page: this.page,
             size: this.size,
@@ -144,13 +133,13 @@ export default {
         })
         .then((res) => {
           console.log(res);
-          this.tableData = res.data;
-          this.total = res.userTotal;
+          this.tableData = res.data; // 请求后端的用户数据，后端使用data
+          this.total = res.articleTotal; // 请求后端的用户总数，后端使用userTotal
         });
     },
     // 重置方法
     reset() {
-      this.username = "";
+      this.title = "";
       this.load();
     },
     // 点击新增打开弹窗方法
@@ -160,16 +149,19 @@ export default {
     },
     // 点击确定新增用户信息
     save() {
-      this.request.post("/user", this.form).then((res) => {
+      this.request.post("/article", this.form).then((res) => {
+        // 判断是否成功
         if (res) {
+          // 检查状态
           this.$message.success("保存成功");
           this.dialogFormVisible = false; // 关闭弹窗
-          this.load();
+          this.load(); // 刷新用户列表
         } else {
           this.$message.error("保存失败");
         }
       });
     },
+
     // 编辑用户
     handleEdit(row) {
       this.form = row; // 传入原有的数据
@@ -177,10 +169,12 @@ export default {
     },
     // 删除用户
     handleDelete(id) {
-      this.request.delete("/user/" + id).then((res) => {
+      this.request.delete("/article/" + id).then((res) => {
+        // 判断是否成功
         if (res) {
+          // 检查状态
           this.$message.success("删除成功");
-          this.load();
+          this.load(); // 刷新用户列表
         } else {
           this.$message.error("删除失败");
         }
@@ -190,17 +184,17 @@ export default {
     handleSelectionChange(val) {
       console.log(val);
     },
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize;
+    handleSizeChange(size) {
+      this.size = size;
       this.load(); // 切换页码需重新请求后端
     },
-    handleCurrentChange(pageNum) {
-      this.pageNum = pageNum;
+    handleCurrentChange(page) {
+      this.page = page;
       this.load(); // 切换页数需重新请求后端
     },
     // 导出数据
     exp() {
-      window.open("http://localhost:8090/user/export");
+      window.open("http://localhost:8090/article/export");
     },
     // 导入数据成功提示并刷新
     handleExcelImportSuccess() {

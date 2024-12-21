@@ -23,6 +23,20 @@ const routes = [{
             title: "用户管理"
         },
         component: () => import('../views/User.vue'),
+    }, {
+        path: 'admin',
+        name: 'Admin',
+        meta: {
+            title: "用户管理"
+        },
+        component: () => import('../views/Admin.vue'),
+    }, {
+        path: 'article',
+        name: 'Article',
+        meta: {
+            title: "文章管理"
+        },
+        component: () => import('../views/Article.vue'),
     }, ]
 
 }, {

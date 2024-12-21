@@ -74,9 +74,9 @@
         background
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="pageNum"
+        :current-page="page"
         :page-sizes="[2, 5, 10, 20]"
-        :page-size="pageSize"
+        :page-size="size"
         layout="total,sizes,prev, pager, next"
         :total="total"
       >
@@ -111,7 +111,7 @@
 
 <script>
 export default {
-  name: "UserPage",
+  name: "AdminPage",
   props: {
     collapseBtnClass: String,
     collapse: Boolean,
@@ -121,7 +121,7 @@ export default {
       tableData: [],
       total: 0,
       page: 1,
-      size: 10,
+      size: 5,
       username: "", // 按用户名搜索
       dialogFormVisible: false,
       multipleSelection: [],
@@ -144,8 +144,8 @@ export default {
         })
         .then((res) => {
           console.log(res);
-          this.tableData = res.data;
-          this.total = res.userTotal;
+          this.tableData = res.data; // 请求后端的用户数据，后端使用data
+          this.total = res.userTotal; // 请求后端的用户总数，后端使用userTotal
         });
     },
     // 重置方法
@@ -161,15 +161,18 @@ export default {
     // 点击确定新增用户信息
     save() {
       this.request.post("/user", this.form).then((res) => {
+        // 判断是否成功
         if (res) {
+          // 检查状态
           this.$message.success("保存成功");
           this.dialogFormVisible = false; // 关闭弹窗
-          this.load();
+          this.load(); // 刷新用户列表
         } else {
           this.$message.error("保存失败");
         }
       });
     },
+
     // 编辑用户
     handleEdit(row) {
       this.form = row; // 传入原有的数据
@@ -178,9 +181,11 @@ export default {
     // 删除用户
     handleDelete(id) {
       this.request.delete("/user/" + id).then((res) => {
+        // 判断是否成功
         if (res) {
+          // 检查状态
           this.$message.success("删除成功");
-          this.load();
+          this.load(); // 刷新用户列表
         } else {
           this.$message.error("删除失败");
         }
@@ -190,12 +195,12 @@ export default {
     handleSelectionChange(val) {
       console.log(val);
     },
-    handleSizeChange(pageSize) {
-      this.pageSize = pageSize;
+    handleSizeChange(size) {
+      this.size = size;
       this.load(); // 切换页码需重新请求后端
     },
-    handleCurrentChange(pageNum) {
-      this.pageNum = pageNum;
+    handleCurrentChange(page) {
+      this.page = page;
       this.load(); // 切换页数需重新请求后端
     },
     // 导出数据
