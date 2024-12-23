@@ -48,15 +48,28 @@ export default {
   },
   methods: {
     login() {
-      this.request.post("/user/login", this.user).then((res) => {
-        if (res) {
+      // 检查用户名和密码是否为空
+      if (!this.user.username || !this.user.password) {
+        this.$message.error("请输入用户名和密码");
+        return;
+      }
+      // 检验输入是否正确
+      this.request
+        .post("/user/login", this.user)
+        .then(() => {
           this.$message.success("登录成功");
-          // 处理登录成功的逻辑
-          this.$router.push("/");
-        } else {
-          this.$message.error("用户名或密码错误");
-        }
-      });
+          this.$router.push("/"); // 处理登录成功的逻辑
+        })
+        .catch((error) => {
+          // 如果返回401未授权，则提示用户输入错误
+          if (error.response.status === 401) {
+            this.$message.error(
+              error.response.data.message || "用户名或密码错误"
+            );
+          } else {
+            this.$message.error("登录请求出错，请稍后再试");
+          }
+        });
     },
   },
 };
