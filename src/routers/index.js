@@ -37,6 +37,13 @@ const routes = [{
             title: "文章管理"
         },
         component: () => import('../views/Article.vue'),
+    }, {
+        path: 'person',
+        name: 'Person',
+        meta: {
+            title: "个人信息"
+        },
+        component: () => import('../views/Person.vue'),
     }, ]
 
 }, {

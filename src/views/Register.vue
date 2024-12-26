@@ -2,10 +2,10 @@
   <div class="wrapper">
     <div
       style="
-        margin: 200px auto;
+        margin: 100px auto;
         background-color: #fff;
-        width: 350px;
-        height: 400px;
+        width: 400px;
+        height: 500px;
         padding: 20px;
         border-radius: 10px;
       "
@@ -21,6 +21,15 @@
             style="margin: 10px 0"
             prefix-icon="el-icon-user"
             v-model="user.username"
+          ></el-input>
+        </el-form-item>
+        <el-form-item prop="nickname">
+          <el-input
+            placeholder="请输入昵称"
+            size="medium"
+            style="margin: 10px 0"
+            prefix-icon="el-icon-user"
+            v-model="user.nickname"
           ></el-input>
         </el-form-item>
         <el-form-item prop="password">
@@ -92,6 +101,15 @@ export default {
         ],
         confirmPassword: [
           { required: true, message: "请确认密码", trigger: "blur" },
+          {
+            min: 2,
+            max: 20,
+            message: "长度在2到20个字符之间",
+            trigger: "blur",
+          },
+        ],
+        nickname: [
+          { required: true, message: "请输入昵称", trigger: "blur" },
           {
             min: 2,
             max: 20,
