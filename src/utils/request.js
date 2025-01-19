@@ -13,7 +13,12 @@ const request = axios.create({
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
 
-    // config.headers['token'] = user.token;  // 设置请求头
+    // 从浏览器请求获取用户user并转为json格式，如果没有则为null
+    let user = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")) : null
+    // 如果用户存在，则设置请求头
+    if (user) {
+        config.headers['token'] = user.token; // 设置请求头
+    }
     return config
 }, error => {
     return Promise.reject(error)

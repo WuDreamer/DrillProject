@@ -20,7 +20,7 @@
     <el-dropdown style="width: 100px; cursor: pointer">
       <div style="display: inline-block">
         <img
-          :src="user.avatarUrl"
+          :src="user.avatar_url"
           alt=""
           class="avatar_img"
           referrerpolicy="no-referrer"

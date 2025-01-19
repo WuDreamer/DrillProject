@@ -44,6 +44,8 @@
       </el-table-column>
       <el-table-column prop="nickname" label="昵称" width="80px">
       </el-table-column>
+      <el-table-column prop="password" label="密码"> </el-table-column>
+      <el-table-column prop="avatar_url" label="头像"> </el-table-column>
       <el-table-column prop="email" label="邮箱"> </el-table-column>
       <el-table-column prop="phone" label="电话"> </el-table-column>
       <el-table-column prop="address" label="地址"> </el-table-column>
@@ -93,6 +95,9 @@
         </el-form-item>
         <el-form-item label="邮箱">
           <el-input v-model="form.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="form.password" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="电话">
           <el-input v-model="form.phone" autocomplete="off"></el-input>

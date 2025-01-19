@@ -36,11 +36,18 @@ export default {
     };
   },
   created() {
-    this.request.get("/user/username/" + this.user.username).then((res) => {
+    // 法1：根据用户ID返回用户信息
+    this.request.get("/user/" + this.user.id).then((res) => {
       if (res) {
         this.form = res.data;
       }
     });
+    // 法2：根据用户名返回用户信息
+    // this.request.get("/user/username/" + this.user.username).then((res) => {
+    //   if (res) {
+    //     this.form = res.data;
+    //   }
+    // });
   },
   methods: {
     save() {
