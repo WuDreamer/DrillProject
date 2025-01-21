@@ -20,12 +20,12 @@
     <el-dropdown style="width: 100px; cursor: pointer">
       <div style="display: inline-block">
         <img
-          :src="user.avatar_url"
+          :src="user.avatar_url || require('../assets/default.png')"
           alt=""
           class="avatar_img"
           referrerpolicy="no-referrer"
         />
-        <span>{{ user.nickname }}</span
+        <span>{{ user.nickname || "匿名" }}</span
         ><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
       </div>
 

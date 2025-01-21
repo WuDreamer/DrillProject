@@ -109,6 +109,8 @@ export default {
         if (valid) {
           this.request.post("/user/login", this.user).then((res) => {
             if (res.code === "200") {
+              const token = res.data.token;
+              localStorage.setItem("token", token);
               localStorage.setItem("user", JSON.stringify(res.data)); // 将后端传来的用户信息存储到浏览器
               this.$router.push("/");
               this.$message.success("登录成功");
